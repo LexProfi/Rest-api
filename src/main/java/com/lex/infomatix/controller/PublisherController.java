@@ -23,17 +23,15 @@ public class PublisherController {
     }
     
     @GetMapping("/get/{id}")
-    public ResponseEntity<Publisher> getPublisherById(@PathVariable(value = "id") Long id) {
-        Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Publisher not found for this id: " + id));
-        return ResponseEntity.ok().body(publisher);
+    public Publisher getPublisherById(@PathVariable(value = "id") Long id) {
+        return publisherRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Publisher not found for this id: " + id));
     }
 
     @PutMapping("/put/{id}")
-    public ResponseEntity<Publisher> updatePublisher(@PathVariable(value = "id") Long id, @RequestBody Publisher editedPublisher) {
+    public Publisher updatePublisher(@PathVariable(value = "id") Long id, @RequestBody Publisher editedPublisher) {
         Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Publisher not found for this id: " + id));
         publisher.setName(editedPublisher.getName());
-        publisherRepository.save(publisher);
-        return ResponseEntity.ok().body(publisher);
+        return publisherRepository.save(publisher);
     }
 
     @DeleteMapping("/dell/{id}")
