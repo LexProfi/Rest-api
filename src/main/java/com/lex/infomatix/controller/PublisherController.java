@@ -1,7 +1,9 @@
 package com.lex.infomatix.controller;
 
+import com.lex.infomatix.exception.AlreadyExistException;
 import com.lex.infomatix.exception.MyEntityNotFoundException;
 import com.lex.infomatix.model.Publisher;
+import com.lex.infomatix.repository.BookRepository;
 import com.lex.infomatix.repository.PublisherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,6 +18,9 @@ public class PublisherController {
 
     @Autowired
     private PublisherRepository publisherRepository;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     @PostMapping("/post")
     public Publisher createPublisher(@Validated @RequestBody Publisher publisher){
@@ -37,6 +42,9 @@ public class PublisherController {
     @DeleteMapping("/dell/{id}")
     public ResponseEntity<Publisher> deletePublisher(@PathVariable(value = "id") Long id) {
         Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Publisher not found for this id: " + id));
+        if(!bookRepository.findAllByPublisher(publisher).isEmpty()){
+            throw new AlreadyExistException("There are already books by the publisher with this id: " +id);
+        }
         publisherRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }
