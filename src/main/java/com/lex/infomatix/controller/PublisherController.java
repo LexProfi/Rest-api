@@ -40,7 +40,7 @@ public class PublisherController {
     }
 
     @DeleteMapping("/dell/{id}")
-    public ResponseEntity<Publisher> deletePublisher(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Publisher> deletePublisher(@PathVariable(value = "id") Long id) throws AlreadyExistException {
         Publisher publisher = publisherRepository.findById(id).orElseThrow(() -> new MyEntityNotFoundException("Publisher not found for this id: " + id));
         if(!bookRepository.findAllByPublisher(publisher).isEmpty()){
             throw new AlreadyExistException("There are already books by the publisher with this id: " +id);
